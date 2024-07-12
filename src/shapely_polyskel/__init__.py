@@ -1,1 +1,1 @@
-from polyskel import skeletonize, set_debug, log
+from .polyskel import skeletonize
