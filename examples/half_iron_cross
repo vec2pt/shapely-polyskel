@@ -1,9 +1,0 @@
-# classic example of a degenerate polygon producing vertex events
-100, 50
-150, 150
-50,  100
-50,  350
-350, 350
-350, 100
-250, 150
-300, 50
