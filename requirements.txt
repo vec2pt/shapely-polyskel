@@ -1,2 +1,1 @@
-euclid3 == 0.1
-Pillow >= 7.0.0
+euclid3==0.1
