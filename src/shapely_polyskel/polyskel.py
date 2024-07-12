@@ -561,7 +561,7 @@ def skeletonize(polygon, holes=None):
     Returns the straight skeleton as a list of "subtrees", which are in the form of (source, height, sinks),
     where source is the highest points, height is its height, and sinks are the point connected to the source.
     """
-    slav = _SLAV(polygon, holes)
+    slav = _SLAV(polygon, [] if holes is None else holes)
     output = []
     prioque = _EventQueue()
 
