@@ -5,45 +5,12 @@ Implementation of the straight skeleton algorithm as described by Felkel and Obd
 """
 
 import heapq
-import logging
 from collections import namedtuple
 from itertools import chain, cycle, islice, tee
 
 from euclid3 import Line2, LineSegment2, Point2, Ray2, operator
 
-log = logging.getLogger("__name__")
-
 EPSILON = 0.00001
-
-
-class Debug:
-    def __init__(self, image):
-        if image is not None:
-            self.im = image[0]
-            self.draw = image[1]
-            self.do = True
-        else:
-            self.do = False
-
-    def line(self, *args, **kwargs):
-        if self.do:
-            self.draw.line(*args, **kwargs)
-
-    def rectangle(self, *args, **kwargs):
-        if self.do:
-            self.draw.rectangle(*args, **kwargs)
-
-    def show(self):
-        if self.do:
-            self.im.show()
-
-
-_debug = Debug(None)
-
-
-def set_debug(image):
-    global _debug
-    _debug = Debug(image)
 
 
 def _window(lst):
@@ -142,16 +109,6 @@ class _LAVertex:
             self.point,
             operator.add(*creator_vectors) * (-1 if self.is_reflex else 1),
         )
-        log.info("Created vertex %s", self.__repr__())
-        _debug.line(
-            (
-                self.bisector.p.x,
-                self.bisector.p.y,
-                self.bisector.p.x + self.bisector.v.x * 100,
-                self.bisector.p.y + self.bisector.v.y * 100,
-            ),
-            fill="blue",
-        )
 
     @property
     def bisector(self):
@@ -170,12 +127,9 @@ class _LAVertex:
         if self.is_reflex:
             # a reflex vertex may generate a split event
             # split events happen when a vertex hits an opposite edge, splitting the polygon in two.
-            log.debug("looking for split candidates for vertex %s", self)
             for edge in self.original_edges:
                 if edge.edge == self.edge_left or edge.edge == self.edge_right:
                     continue
-
-                log.debug("\tconsidering EDGE %s", edge)
 
                 # a potential b is at the intersection of between our own bisector and the bisector of the
                 # angle between the tested edge and any one of our own edges.
@@ -236,16 +190,8 @@ class _LAVertex:
                     )
 
                     if not (xleft and xright and xedge):
-                        log.debug(
-                            "\t\tDiscarded candidate %s (%s-%s-%s)",
-                            b,
-                            xleft,
-                            xright,
-                            xedge,
-                        )
                         continue
 
-                    log.debug("\t\tFound valid candidate %s", b)
                     events.append(
                         _SplitEvent(
                             Line2(edge.edge).distance(b), b, self, edge.edge
@@ -282,7 +228,6 @@ class _LAVertex:
             key=lambda event: self.point.distance(event.intersection_point),
         )
 
-        log.info("Generated new event for %s: %s", self, ev)
         return ev
 
     def invalidate(self):
@@ -342,28 +287,11 @@ class _SLAV:
 
         lav = event.vertex_a.lav
         if event.vertex_a.prev == event.vertex_b.next:
-            log.info(
-                "%.2f Peak event at intersection %s from <%s,%s,%s> in %s",
-                event.distance,
-                event.intersection_point,
-                event.vertex_a,
-                event.vertex_b,
-                event.vertex_a.prev,
-                lav,
-            )
             self._lavs.remove(lav)
             for vertex in list(lav):
                 sinks.append(vertex.point)
                 vertex.invalidate()
         else:
-            log.info(
-                "%.2f Edge event at intersection %s from <%s,%s> in %s",
-                event.distance,
-                event.intersection_point,
-                event.vertex_a,
-                event.vertex_b,
-                lav,
-            )
             new_vertex = lav.unify(
                 event.vertex_a, event.vertex_b, event.intersection_point
             )
@@ -381,14 +309,6 @@ class _SLAV:
 
     def handle_split_event(self, event):
         lav = event.vertex.lav
-        log.info(
-            "%.2f Split event at intersection %s from vertex %s, for edge %s in %s",
-            event.distance,
-            event.intersection_point,
-            event.vertex,
-            event.opposite_edge,
-            lav,
-        )
 
         sinks = [event.vertex.point]
         vertices = []
@@ -396,7 +316,6 @@ class _SLAV:
         y = None  # left vertex
         norm = event.opposite_edge.v.normalized()
         for v in chain.from_iterable(self._lavs):
-            log.debug("%s in %s", v, v.lav)
             if (
                 norm == v.edge_left.v.normalized()
                 and event.opposite_edge.p == v.edge_left.p
@@ -425,13 +344,6 @@ class _SLAV:
                     )
                     <= EPSILON
                 )
-                log.debug(
-                    "Vertex %s holds edge as %s edge (%s, %s)",
-                    v,
-                    ("left" if x == v else "right"),
-                    xleft,
-                    xright,
-                )
 
                 if xleft and xright:
                     break
@@ -440,10 +352,6 @@ class _SLAV:
                     y = None
 
         if x is None:
-            log.info(
-                "Failed split event %s (equivalent edge event is expected to follow)",
-                event,
-            )
             return (None, [])
 
         v1 = _LAVertex(
@@ -477,17 +385,10 @@ class _SLAV:
             new_lavs = [_LAV.from_chain(v1, self), _LAV.from_chain(v2, self)]
 
         for l in new_lavs:
-            log.debug(l)
             if len(l) > 2:
                 self._lavs.append(l)
                 vertices.append(l.head)
             else:
-                log.info(
-                    "LAV %s has collapsed into the line %s--%s",
-                    l,
-                    l.head.point,
-                    l.head.next.point,
-                )
                 sinks.append(l.head.next.point)
                 for v in list(l):
                     v.invalidate()
@@ -510,7 +411,6 @@ class _LAV:
         self.head = None
         self._slav = slav
         self._len = 0
-        log.debug("Created LAV %s", self)
 
     @classmethod
     def from_polygon(cls, polygon, slav):
@@ -544,7 +444,6 @@ class _LAV:
         assert (
             vertex.lav is self
         ), "Tried to invalidate a vertex that's not mine"
-        log.debug("Invalidating %s", vertex)
         vertex._valid = False
         if self.head == vertex:
             self.head = self.head.next
@@ -671,19 +570,14 @@ def skeletonize(polygon, holes=None):
             prioque.put(vertex.next_event())
 
     while not (prioque.empty() or slav.empty()):
-        log.debug("SLAV is %s", [repr(lav) for lav in slav])
         i = prioque.get()
         if isinstance(i, _EdgeEvent):
             if not i.vertex_a.is_valid or not i.vertex_b.is_valid:
-                log.info("%.2f Discarded outdated edge event %s", i.distance, i)
                 continue
 
             (arc, events) = slav.handle_edge_event(i)
         elif isinstance(i, _SplitEvent):
             if not i.vertex.is_valid:
-                log.info(
-                    "%.2f Discarded outdated split event %s", i.distance, i
-                )
                 continue
             (arc, events) = slav.handle_split_event(i)
 
@@ -691,11 +585,6 @@ def skeletonize(polygon, holes=None):
 
         if arc is not None:
             output.append(arc)
-            for sink in arc.sinks:
-                _debug.line(
-                    (arc.source.x, arc.source.y, sink.x, sink.y), fill="red"
-                )
 
-            _debug.show()
     _merge_sources(output)
     return output
