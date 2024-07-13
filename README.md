@@ -1,8 +1,11 @@
-[![Gittens](http://gittens.r15.railsrumble.com//badge/Botffy/polyskel)](http://gittens.r15.railsrumble.com/gitten/Botffy/polyskel)
+# shapely-polyskel
 
-# Polyskel
-
+<p align="center">
 <img src="doc/example.png" alt="A straight skeleton"/>
+</p>
+
+> [!NOTE]
+> This package is a fork of an implementation written by Ármin Scipiades (Botffy). The original code can be found under the [link](https://github.com/Botffy/polyskel).
 
 This is a Python 3 implementation of the straight skeleton algorithm as described by Felkel and Obdržálek in their 1998 conference paper [Straight skeleton implementation](doc/StraightSkeletonImplementation.pdf).
 
@@ -12,28 +15,28 @@ It works kinda okay for most real-life input (for example country contours or fl
 
 For a modern and excellent overview of the topic please refer to Stefan Huber's excellent [Computing Straight Skeleton and Motorcycle Graphs: Theory and Practice](https://www.sthu.org/research/publications/files/phdthesis.pdf).
 
-## Installation and prerequisites
+## Installation
 
-You will need Python 3.8.1.
-Download the repo and install using pip: `pip install -r requirements.txt`.
-We use `euclid3` for geometry computations, and the demo uses `Pillow` to display the images.
+shapely-polyskel is available on PyPI:
 
-## Demo
+```bash
+pip install shapely-polyskel
+```
 
-Use `demo.py` for a demonstration.
-The demo parses an input polygon file, and outputs a tree structure representing the straight skeleton, as well as an image of the polygon with the skeleton.
+<!-- ## Usage
 
-`demo.py [-h] [--verbose] [--log {DEBUG,INFO,WARNING,ERROR}] <polygon-file>`
+```python
+from shapely_polyskel import skeletonize
 
-- `-h` show the help message and exit.
-- `--verbose` output an image after every event, marking the current state of the skeleton and the bisectors of all vertices. Do not do this for large polygons
-- `--log` set the lowest log level to display. Polyskel logs events at info level, and further information at debug level.
-- `<polygon-file>` the text file describing the polygon. The polygon is to be given as a counter-clockwise series of vertices specified by their coordinates. Holes can be specified as a clockwise series of coordinates. A number of example inputs are supplied in the `examples` folder.
+rectangle = [(0, 0), (0, 20), (40, 20), (40, 0)]
 
----
+straight_skeleton = skeletonize(florida_polygon)
 
-Check out [Yongha Hwang's fork](https://github.com/yonghah/polyskel) to see polyskel in [sweet real-life action](https://github.com/yonghah/polyskel/blob/master/Create%20layout%20network%20using%20straight%20skeletons%20.ipynb) <3 <3 <3.
+# [Subtree(source=Point2(10.00, 10.00), height=10.0, sinks=[Point2(0.00, 0.00), Point2(0.00, 20.00)]), Subtree(source=Point2(30.00, 10.00), height=10.0, sinks=[Point2(10.00, 10.00), Point2(40.00, 20.00), Point2(40.00, 0.00)])]
+``` -->
 
-There is also [a Swift port](https://github.com/andygeers/Polyskel-Swift) available of Yongha Hwang's version.
+## Forks & ports
 
-[bpolyskel](https://github.com/prochitecture/bpypolyskel) is a port for Blender, making [some sweet roofs](https://user-images.githubusercontent.com/613295/94917497-4fd8c800-04b9-11eb-89ba-2f4f47f5b416.png) <3.
+- [Yongha Hwang's fork](https://github.com/yonghah/polyskel). Check out it to see polyskel in [sweet real-life action](https://github.com/yonghah/polyskel/blob/master/Create%20layout%20network%20using%20straight%20skeletons%20.ipynb) :heart: :heart: :heart:.
+- [Polyskel-Swift](https://github.com/andygeers/Polyskel-Swift) a Swift port.
+- [bpolyskel](https://github.com/prochitecture/bpypolyskel) is a port for Blender, making [some sweet roofs](https://user-images.githubusercontent.com/613295/94917497-4fd8c800-04b9-11eb-89ba-2f4f47f5b416.png) :heart:.
