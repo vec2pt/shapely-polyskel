@@ -1,0 +1,68 @@
+[build-system]
+# requires = ["hatchling"]
+# build-backend = "hatchling.build"
+requires      = ["setuptools>=70.3.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shapely-polyskel"
+version = "0.1.0"
+dependencies = ["euclid3==0.1", "shapely==2.0.5"]
+requires-python = ">=3.9"
+authors = [{ name = "Ármin Scipiades" }, { name = "vec2pt" }]
+maintainers = [{ name = "vec2pt" }]
+description = "Implementation of the straight skeleton algorithm as described by Felkel and Obdržálek in their 1998 conference paper Straight skeleton implementation."
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { file = "LICENSE" }
+keywords = ["shapely", "geometry", "polygon", "straight skeleton"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: GIS",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+dev = ["ruff"]
+
+[project.urls]
+Homepage = "https://github.com/vec2pt/shapely-polyskel"
+Repository = "https://github.com/vec2pt/shapely-polyskel.git"
+"Bug Tracker" = "https://github.com/vec2pt/shapely-polyskel/issues"
+# Changelog = "https://github.com/vec2pt/shapely-polyskel/blob/master/CHANGELOG.md"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+
+[tool.ruff]
+line-length = 80
+indent-width = 4
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+    "E", # pycodestyle
+    "F", # Pyflakes
+    "UP", # pyupgrade
+    "B", # flake8-bugbear
+    "SIM", # flake8-simplify
+    "I", # isort
+    "ANN", # flake8 type annotations
+    "RUF", # ruff-specific rules
+]
+fixable = ["ALL"]
