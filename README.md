@@ -23,17 +23,47 @@ shapely-polyskel is available on PyPI:
 pip install shapely-polyskel
 ```
 
-<!-- ## Usage
+## Usage
+
+### Basic example (`skeletonize`)
 
 ```python
 from shapely_polyskel import skeletonize
 
-rectangle = [(0, 0), (0, 20), (40, 20), (40, 0)]
+rectangle = [(40, 40), (40, 310), (520, 310), (520, 40)]
+skeleton = skeletonize(polygon=rectangle)
+```
 
-straight_skeleton = skeletonize(florida_polygon)
+### Polygon with holes (`skeletonize`)
 
-# [Subtree(source=Point2(10.00, 10.00), height=10.0, sinks=[Point2(0.00, 0.00), Point2(0.00, 20.00)]), Subtree(source=Point2(30.00, 10.00), height=10.0, sinks=[Point2(10.00, 10.00), Point2(40.00, 20.00), Point2(40.00, 0.00)])]
-``` -->
+```python
+from shapely_polyskel import skeletonize
+
+rectangle = [(40, 40), (40, 310), (520, 310), (520, 40)]
+holes = [[(100, 100), (200, 100), (200, 150), (100, 150)]]
+skeleton = skeletonize(polygon=rectangle, holes=holes)
+```
+### Basic example (`StraightSkeleton`)
+
+```python
+from shapely import Polygon
+from shapely_polyskel import StraightSkeleton
+
+# In the case of using 'StraightSkeleton', the direction of the polygon/hole points is not important.
+polygon = Polygon(
+    [(520, 40), (520, 310), (40, 310), (40, 40)],
+    [[(100, 150), (200, 150), (200, 100), (100, 100)]],
+)
+
+straight_skeleton = StraightSkeleton(polygon=polygon)
+
+# Returns the same list as 'skeletonize'
+skeleton = straight_skeleton.straight_skeleton
+
+source_points = straight_skeleton.source_points(points3d=False)
+ridges = straight_skeleton.ridges()
+sinks = straight_skeleton.sinks()
+```
 
 ## Forks & ports
 
