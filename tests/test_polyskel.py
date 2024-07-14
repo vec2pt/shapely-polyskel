@@ -1,9 +1,4 @@
-import os
-import sys
-
 import pytest
-
-sys.path.append(os.getcwd() + "/src")
 from shapely_polyskel import skeletonize
 
 init_data = [
@@ -155,12 +150,7 @@ init_data = [
         "expected": True,
     },
     {  # rectangle
-        "polygon": [
-            (40, 40),
-            (40, 310),
-            (520, 310),
-            (520, 40),
-        ],
+        "polygon": [(40, 40), (40, 310), (520, 310), (520, 40)],
         "holes": None,
         "expected": True,
     },
