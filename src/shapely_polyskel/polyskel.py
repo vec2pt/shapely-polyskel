@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
-
 """
-Implementation of the straight skeleton algorithm as described by Felkel and Obdržálek in their 1998 conference paper Straight skeleton implementation.
+Implementation of the straight skeleton algorithm as described by Felkel and
+Obdržálek in their 1998 conference paper Straight skeleton implementation.
 """
 
 import heapq
@@ -20,24 +19,23 @@ def _window(lst):
     return zip(prevs, items, nexts)
 
 
-def _cross(a, b):
-    res = a.x * b.y - b.x * a.y
-    return res
+def _cross(a: Point2, b: Point2) -> float:
+    return a.x * b.y - b.x * a.y
 
 
-def _approximately_equals(a, b):
+def _approximately_equals(a, b) -> bool:
     return a == b or (abs(a - b) <= max(abs(a), abs(b)) * 0.001)
 
 
-def _approximately_same(point_a, point_b):
+def _approximately_same(point_a: Point2, point_b: Point2) -> bool:
     return _approximately_equals(
         point_a.x, point_b.x
     ) and _approximately_equals(point_a.y, point_b.y)
 
 
-def _normalize_contour(contour):
-    contour = [Point2(float(x), float(y)) for (x, y) in contour]
-    return [
+def _normalize_contour(contour: list) -> list[Point2]:
+    contour = [Point2(x, y) for (x, y) in contour]
+    normalized_contour = [
         point
         for prev, point, next in _window(contour)
         if not (
@@ -45,6 +43,7 @@ def _normalize_contour(contour):
             or (point - prev).normalized() == (next - point).normalized()
         )
     ]
+    return normalized_contour
 
 
 class _SplitEvent(
@@ -54,16 +53,12 @@ class _SplitEvent(
 ):
     __slots__ = ()
 
-    def __lt__(self, other):
+    def __lt__(self, other: "_SplitEvent") -> bool:
         return self.distance < other.distance
 
-    def __str__(self):
-        return "{} Split event @ {} from {} to {}".format(
-            self.distance,
-            self.intersection_point,
-            self.vertex,
-            self.opposite_edge,
-        )
+    def __str__(self) -> str:
+        return f"{self.distance} Split event @ {self.intersection_point} from \
+{self.vertex} to {self.opposite_edge}"
 
 
 class _EdgeEvent(
@@ -71,13 +66,12 @@ class _EdgeEvent(
 ):
     __slots__ = ()
 
-    def __lt__(self, other):
+    def __lt__(self, other: "_EdgeEvent") -> str:
         return self.distance < other.distance
 
-    def __str__(self):
-        return "{} Edge event @ {} between {} and {}".format(
-            self.distance, self.intersection_point, self.vertex_a, self.vertex_b
-        )
+    def __str__(self) -> str:
+        return f"{self.distance} Edge event @ {self.intersection_point} between\
+ {self.vertex_a} and {self.vertex_b}"
 
 
 _OriginalEdge = namedtuple(
@@ -88,14 +82,21 @@ Subtree = namedtuple("Subtree", "source, height, sinks")
 
 
 class _LAVertex:
-    def __init__(self, point, edge_left, edge_right, direction_vectors=None):
+    def __init__(
+        self,
+        point,
+        edge_left: LineSegment2,
+        edge_right: LineSegment2,
+        direction_vectors=None,
+    ) -> None:
         self.point = point
         self.edge_left = edge_left
         self.edge_right = edge_right
         self.prev = None
         self.next = None
         self.lav = None
-        self._valid = True  # TODO this might be handled better. Maybe membership in lav implies validity?
+        # TODO this might be handled better. Maybe membership in lav implies validity?
+        self._valid = True
 
         creator_vectors = (
             edge_left.v.normalized() * -1,
@@ -111,11 +112,11 @@ class _LAVertex:
         )
 
     @property
-    def bisector(self):
+    def bisector(self) -> Ray2:
         return self._bisector
 
     @property
-    def is_reflex(self):
+    def is_reflex(self) -> bool:
         return self._is_reflex
 
     @property
@@ -237,13 +238,13 @@ class _LAVertex:
             self._valid = False
 
     @property
-    def is_valid(self):
+    def is_valid(self) -> bool:
         return self._valid
 
-    def __str__(self):
-        return "Vertex ({:.2f};{:.2f})".format(self.point.x, self.point.y)
+    def __str__(self) -> str:
+        return f"Vertex ({self.point.x:.2f};{self.point.y:.2f})"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "Vertex ({}) ({:.2f};{:.2f}), bisector {}, edges {} {}".format(
             "reflex" if self.is_reflex else "convex",
             self.point.x,
@@ -255,7 +256,7 @@ class _LAVertex:
 
 
 class _SLAV:
-    def __init__(self, polygon, holes):
+    def __init__(self, polygon: list, holes: list) -> None:
         contours = [_normalize_contour(polygon)]
         contours.extend([_normalize_contour(hole) for hole in holes])
 
@@ -272,13 +273,12 @@ class _SLAV:
         ]
 
     def __iter__(self):
-        for lav in self._lavs:
-            yield lav
+        yield from self._lavs
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._lavs)
 
-    def empty(self):
+    def empty(self) -> bool:
         return len(self._lavs) == 0
 
     def handle_edge_event(self, event):
@@ -407,7 +407,7 @@ class _SLAV:
 
 
 class _LAV:
-    def __init__(self, slav):
+    def __init__(self, slav) -> None:
         self.head = None
         self._slav = slav
         self._len = 0
@@ -475,13 +475,13 @@ class _LAV:
         self._len -= 1
         return replacement
 
-    def __str__(self):
-        return "LAV {}".format(id(self))
+    def __str__(self) -> str:
+        return f"LAV {id(self)}"
 
-    def __repr__(self):
-        return "{} = {}".format(str(self), [vertex for vertex in self])
+    def __repr__(self) -> str:
+        return f"{self!s} = {[vertex for vertex in self]}"
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self._len
 
     def __iter__(self):
@@ -502,7 +502,7 @@ class _LAV:
 
 
 class _EventQueue:
-    def __init__(self):
+    def __init__(self) -> None:
         self.__data = []
 
     def put(self, item):
@@ -516,21 +516,21 @@ class _EventQueue:
     def get(self):
         return heapq.heappop(self.__data)
 
-    def empty(self):
+    def empty(self) -> bool:
         return len(self.__data) == 0
 
     def peek(self):
         return self.__data[0]
 
-    def show(self):
+    def show(self) -> None:
         for item in self.__data:
             print(item)
 
 
-def _merge_sources(skeleton):
+def _merge_sources(skeleton) -> None:
     """
-    In highly symmetrical shapes with reflex vertices multiple sources may share the same
-    location. This function merges those sources.
+    In highly symmetrical shapes with reflex vertices multiple sources may share
+    the same location. This function merges those sources.
     """
     sources = {}
     to_remove = []
@@ -549,17 +549,20 @@ def _merge_sources(skeleton):
         skeleton.pop(i)
 
 
-def skeletonize(polygon, holes=None):
+def skeletonize(polygon: list, holes: list | None = None) -> list:
     """
     Compute the straight skeleton of a polygon.
 
-    The polygon should be given as a list of vertices in counter-clockwise order.
-    Holes is a list of the contours of the holes, the vertices of which should be in clockwise order.
+    The polygon should be given as a list of vertices in counter-clockwise
+    order.Holes is a list of the contours of the holes, the vertices of which
+    should be in clockwise order.
 
-    Please note that the y-axis goes downwards as far as polyskel is concerned, so specify your ordering accordingly.
+    Please note that the y-axis goes downwards as far as polyskel is concerned,
+    so specify your ordering accordingly.
 
-    Returns the straight skeleton as a list of "subtrees", which are in the form of (source, height, sinks),
-    where source is the highest points, height is its height, and sinks are the point connected to the source.
+    Returns the straight skeleton as a list of "subtrees", which are in the form
+    of (source, height, sinks), where source is the highest points, height is
+    its height, and sinks are the point connected to the source.
     """
     slav = _SLAV(polygon, [] if holes is None else holes)
     output = []
