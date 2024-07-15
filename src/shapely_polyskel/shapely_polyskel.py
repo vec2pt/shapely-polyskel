@@ -15,7 +15,7 @@ from .polyskel import skeletonize
 class StraightSkeleton:
     """StraightSkeleton"""
 
-    def __init__(self: "StraightSkeleton", polygon: Polygon) -> None:
+    def __init__(self, polygon: Polygon) -> None:
         """Straight skeleton
 
         Args:
@@ -35,24 +35,22 @@ class StraightSkeleton:
         self._polygon = normalize(simplify(polygon, 0))
         self._straight_skeleton = self._skeletonize()
 
-    def _skeletonize(self: "StraightSkeleton") -> list:
+    def _skeletonize(self) -> list:
         polygon_pts = self._polygon.exterior.coords[:-1]
         holes_pts = [i.coords[:-1] for i in self._polygon.interiors]
         return skeletonize(polygon_pts, holes_pts)
 
     @property
-    def polygon(self: "StraightSkeleton") -> Polygon:
+    def polygon(self) -> Polygon:
         """Returns input polygon."""
         return self._polygon
 
     @property
-    def straight_skeleton(self: "StraightSkeleton") -> list:
+    def straight_skeleton(self) -> list:
         """Returns straight skeleton (polyskel)."""
         return self._straight_skeleton
 
-    def _source_points_coords(
-        self: "StraightSkeleton", points3d: bool = False
-    ) -> list:
+    def _source_points_coords(self, points3d: bool = False) -> list:
         coords = [
             (st.source.x, st.source.y, st.height)
             if points3d
@@ -61,9 +59,7 @@ class StraightSkeleton:
         ]
         return coords
 
-    def source_points(
-        self: "StraightSkeleton", points3d: bool = False
-    ) -> MultiPoint | Point:
+    def source_points(self, points3d: bool = False) -> MultiPoint | Point:
         """Source points
 
         Args:
@@ -78,7 +74,7 @@ class StraightSkeleton:
         return MultiPoint(source_points_coords)
 
     def ridges(
-        self: "StraightSkeleton",
+        self,
     ) -> MultiLineString | LineString | Point:
         """Straight skeleton ridges
 
@@ -102,7 +98,7 @@ class StraightSkeleton:
             ]
             return MultiLineString(ridges_lines)
 
-    def sinks(self: "StraightSkeleton") -> MultiLineString:
+    def sinks(self) -> MultiLineString:
         """Straight skeleton sinks
 
         Returns:
@@ -118,13 +114,13 @@ class StraightSkeleton:
         ]
         return MultiLineString(sinks_lines)
 
-    def __str__(self: "StraightSkeleton") -> str:
+    def __str__(self) -> str:
         return f"StraightSkeleton ({self._polygon})"
 
-    def __repr__(self: "StraightSkeleton") -> str:
+    def __repr__(self) -> str:
         return f"StraightSkeleton ({self._polygon})"
 
-    def _repr_svg_(self: "StraightSkeleton") -> str:
+    def _repr_svg_(self) -> str:
         """SVG representation for iPython notebook"""
         # TODO Add different colors
         geometry = GeometryCollection(
