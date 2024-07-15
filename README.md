@@ -25,7 +25,7 @@ pip install shapely-polyskel
 
 ## Usage
 
-### Basic example (`skeletonize`)
+<!-- ### Basic example (`skeletonize`)
 
 ```python
 from shapely_polyskel import skeletonize
@@ -42,8 +42,9 @@ from shapely_polyskel import skeletonize
 rectangle = [(40, 40), (40, 310), (520, 310), (520, 40)]
 holes = [[(100, 100), (200, 100), (200, 150), (100, 150)]]
 skeleton = skeletonize(polygon=rectangle, holes=holes)
-```
-### Basic example (`StraightSkeleton`)
+``` -->
+
+### Basic example
 
 ```python
 from shapely import Polygon
@@ -56,9 +57,6 @@ polygon = Polygon(
 )
 
 straight_skeleton = StraightSkeleton(polygon=polygon)
-
-# Returns the same list as 'skeletonize'
-skeleton = straight_skeleton.straight_skeleton
 
 source_points = straight_skeleton.source_points(points3d=False)
 ridges = straight_skeleton.ridges()

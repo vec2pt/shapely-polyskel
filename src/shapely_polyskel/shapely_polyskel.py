@@ -45,10 +45,11 @@ class StraightSkeleton:
         """Returns input polygon."""
         return self._polygon
 
-    @property
-    def straight_skeleton(self) -> list:
-        """Returns straight skeleton (polyskel)."""
-        return self._straight_skeleton
+    # TODO
+    # @property
+    # def straight_skeleton(self) -> list:
+    #     """Returns straight skeleton (polyskel)."""
+    #     return self._straight_skeleton
 
     def _source_points_coords(self, points3d: bool = False) -> list:
         coords = [
