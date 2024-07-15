@@ -4,33 +4,34 @@ Obdržálek in their 1998 conference paper Straight skeleton implementation.
 """
 
 import heapq
-from collections import namedtuple
+from dataclasses import dataclass
 from itertools import chain, cycle, islice, tee
 
-from euclid3 import Line2, LineSegment2, Point2, Ray2, operator
+from euclid3 import Line2, LineSegment2, Point2, Ray2, Vector2, operator
 
 EPSILON = 0.00001
 
 
-def _window(lst):
+def _window(lst: list[Point2]):
     prevs, items, nexts = tee(lst, 3)
     prevs = islice(cycle(prevs), len(lst) - 1, None)
     nexts = islice(cycle(nexts), 1, None)
     return zip(prevs, items, nexts)
 
 
-def _cross(a: Point2, b: Point2) -> float:
+def _cross(a: Vector2, b: Vector2) -> float:
     return a.x * b.y - b.x * a.y
 
 
-def _approximately_equals(a, b) -> bool:
+def _approximately_equals(a: Point2, b: Point2) -> bool:
     return a == b or (abs(a - b) <= max(abs(a), abs(b)) * 0.001)
 
 
-def _approximately_same(point_a: Point2, point_b: Point2) -> bool:
-    return _approximately_equals(
-        point_a.x, point_b.x
-    ) and _approximately_equals(point_a.y, point_b.y)
+# TODO Function not used
+# def _approximately_same(point_a: Point2, point_b: Point2) -> bool:
+#     return _approximately_equals(
+#         point_a.x, point_b.x
+#     ) and _approximately_equals(point_a.y, point_b.y)
 
 
 def _normalize_contour(contour: list) -> list[Point2]:
@@ -46,48 +47,27 @@ def _normalize_contour(contour: list) -> list[Point2]:
     return normalized_contour
 
 
-class _SplitEvent(
-    namedtuple(
-        "_SplitEvent", "distance, intersection_point, vertex, opposite_edge"
-    )
-):
-    __slots__ = ()
-
-    def __lt__(self, other: "_SplitEvent") -> bool:
-        return self.distance < other.distance
-
-    def __str__(self) -> str:
-        return f"{self.distance} Split event @ {self.intersection_point} from \
-{self.vertex} to {self.opposite_edge}"
+@dataclass
+class _OriginalEdge:
+    edge: LineSegment2
+    bisector_left: Ray2
+    bisector_right: Ray2
 
 
-class _EdgeEvent(
-    namedtuple("_EdgeEvent", "distance intersection_point vertex_a vertex_b")
-):
-    __slots__ = ()
-
-    def __lt__(self, other: "_EdgeEvent") -> str:
-        return self.distance < other.distance
-
-    def __str__(self) -> str:
-        return f"{self.distance} Edge event @ {self.intersection_point} between\
- {self.vertex_a} and {self.vertex_b}"
-
-
-_OriginalEdge = namedtuple(
-    "_OriginalEdge", "edge bisector_left, bisector_right"
-)
-
-Subtree = namedtuple("Subtree", "source, height, sinks")
+@dataclass
+class Subtree:
+    source: Point2
+    height: float
+    sinks: list[Point2]
 
 
 class _LAVertex:
     def __init__(
         self,
-        point,
+        point: Point2,
         edge_left: LineSegment2,
         edge_right: LineSegment2,
-        direction_vectors=None,
+        direction_vectors: tuple[Vector2, Vector2] | None = None,
     ) -> None:
         self.point = point
         self.edge_left = edge_left
@@ -253,6 +233,36 @@ class _LAVertex:
             self.edge_left,
             self.edge_right,
         )
+
+
+@dataclass
+class _SplitEvent:
+    distance: float
+    intersection_point: Point2
+    vertex: _LAVertex
+    opposite_edge: LineSegment2
+
+    def __lt__(self, other: "_SplitEvent") -> bool:
+        return self.distance < other.distance
+
+    def __str__(self) -> str:
+        return f"{self.distance} Split event @ {self.intersection_point} from \
+{self.vertex} to {self.opposite_edge}"
+
+
+@dataclass
+class _EdgeEvent:
+    distance: float
+    intersection_point: Point2
+    vertex_a: _LAVertex
+    vertex_b: _LAVertex
+
+    def __lt__(self, other: "_EdgeEvent") -> bool:
+        return self.distance < other.distance
+
+    def __str__(self) -> str:
+        return f"{self.distance} Edge event @ {self.intersection_point} between\
+ {self.vertex_a} and {self.vertex_b}"
 
 
 class _SLAV:
@@ -492,7 +502,7 @@ class _LAV:
             if cur == self.head:
                 return
 
-    def _show(self):
+    def _show(self) -> None:
         cur = self.head
         while True:
             print(cur.__repr__())
@@ -527,7 +537,7 @@ class _EventQueue:
             print(item)
 
 
-def _merge_sources(skeleton) -> None:
+def _merge_sources(skeleton: list[Subtree]) -> None:
     """
     In highly symmetrical shapes with reflex vertices multiple sources may share
     the same location. This function merges those sources.
@@ -549,7 +559,7 @@ def _merge_sources(skeleton) -> None:
         skeleton.pop(i)
 
 
-def skeletonize(polygon: list, holes: list | None = None) -> list:
+def skeletonize(polygon: list, holes: list | None = None) -> list[Subtree]:
     """
     Compute the straight skeleton of a polygon.
 
