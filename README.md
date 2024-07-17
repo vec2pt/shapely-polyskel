@@ -1,7 +1,7 @@
 # shapely-polyskel
 
 <p align="center">
-<img src="doc/example.png" alt="A straight skeleton"/>
+<img src="doc/example.svg" alt="A straight skeleton"/>
 </p>
 
 > [!NOTE]
@@ -42,9 +42,9 @@ from shapely_polyskel import skeletonize
 rectangle = [(40, 40), (40, 310), (520, 310), (520, 40)]
 holes = [[(100, 100), (200, 100), (200, 150), (100, 150)]]
 skeleton = skeletonize(polygon=rectangle, holes=holes)
-``` -->
+```
 
-### Basic example
+### Basic example -->
 
 ```python
 from shapely import Polygon
@@ -62,6 +62,8 @@ source_points = straight_skeleton.source_points(points3d=False)
 ridges = straight_skeleton.ridges()
 sinks = straight_skeleton.sinks()
 ```
+
+More examples can be found in the [notebooks](./notebooks/) folder.
 
 ## Forks & ports
 
