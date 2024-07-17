@@ -1,5 +1,10 @@
+# This file is a test initiation only.
+# TODO Add real tests !!!
+# TODO Add speed tests
+
 import pytest
-from shapely_polyskel import skeletonize
+from shapely import Polygon
+from shapely_polyskel import StraightSkeleton
 
 init_data = [
     {  # florida
@@ -259,7 +264,8 @@ init_data = [
 )
 def test_validation(polygon, holes, expected):
     try:
-        skeletonize(polygon, holes)
+        shapely_polygon = Polygon(polygon, holes)
+        StraightSkeleton(shapely_polygon)
         assert True == expected
     except TypeError:
         assert False == expected
