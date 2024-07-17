@@ -121,6 +121,24 @@ class StraightSkeleton:
     def __repr__(self) -> str:
         return f"StraightSkeleton ({self._polygon})"
 
+    def svg(self, scale_factor: float = 1.0, color: str | None = None) -> str:
+        """Returns a group of SVG elements for the straight skeleton.
+
+        Args:
+            scale_factor (float, optional): Multiplication factor for the SVG
+                stroke-width. Defaults to 1.0.
+            color (str | None, optional): Hex string for stroke or fill color.
+                Default is to use "#66cc99" if geometry is valid, and "#ff3333"
+                if invalid. Defaults to None.
+
+        Returns:
+            str: SVG string.
+        """
+        geometry = GeometryCollection(
+            [self._polygon, self.ridges(), self.sinks()]
+        )
+        return geometry.svg(scale_factor, color)
+
     def _repr_svg_(self) -> str:
         """SVG representation for iPython notebook"""
         # TODO Add different colors
