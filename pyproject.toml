@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 name = "shapely-polyskel"
 version = "0.1.0"
 dependencies = ["euclid3==0.1", "shapely==2.0.5"]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 authors = [{ name = "Ármin Scipiades" }, { name = "vec2pt" }]
 maintainers = [{ name = "vec2pt" }]
 description = "Implementation of the straight skeleton algorithm as described by Felkel and Obdržálek in their 1998 conference paper Straight skeleton implementation."
@@ -25,9 +25,9 @@ classifiers = [
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 
 [project.optional-dependencies]
