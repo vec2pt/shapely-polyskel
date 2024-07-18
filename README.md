@@ -1,5 +1,10 @@
 # shapely-polyskel
 
+![PyPI - Status](https://img.shields.io/pypi/status/shapely-polyskel)
+![PyPI - Version](https://img.shields.io/pypi/v/shapely-polyskel)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/shapely-polyskel)
+
+
 <p align="center">
 <img src="doc/example.png" alt="A straight skeleton"/>
 </p>
