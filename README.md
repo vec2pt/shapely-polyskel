@@ -6,7 +6,7 @@
 
 
 <p align="center">
-<img src="doc/example.png" alt="A straight skeleton"/>
+<img src="https://raw.githubusercontent.com/vec2pt/shapely-polyskel/master/doc/example.png" alt="A straight skeleton"/>
 </p>
 
 > [!NOTE]
