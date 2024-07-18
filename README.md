@@ -1,7 +1,7 @@
 # shapely-polyskel
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/vec2pt/shapely-polyskel/099e03fdbc5cace1cb79a2282e9d1b09d813a7ca/doc/example.svg" alt="A straight skeleton"/>
+<img src="doc/example.png" alt="A straight skeleton"/>
 </p>
 
 > [!NOTE]
@@ -25,7 +25,7 @@ pip install shapely-polyskel
 
 ## Usage
 
-<!-- ### Basic example (`skeletonize`)
+### Basic example (`skeletonize`)
 
 ```python
 from shapely_polyskel import skeletonize
@@ -44,19 +44,24 @@ holes = [[(100, 100), (200, 100), (200, 150), (100, 150)]]
 skeleton = skeletonize(polygon=rectangle, holes=holes)
 ```
 
-### Basic example -->
+### Basic example (`StraightSkeleton`)
 
 ```python
 from shapely import Polygon
 from shapely_polyskel import StraightSkeleton
 
-# In the case of using 'StraightSkeleton', the direction of the polygon/hole points is not important.
+# In the case of using 'StraightSkeleton', the direction of the polygon/hole
+# points is not important.
+
 polygon = Polygon(
     [(520, 40), (520, 310), (40, 310), (40, 40)],
     [[(100, 150), (200, 150), (200, 100), (100, 100)]],
 )
 
 straight_skeleton = StraightSkeleton(polygon=polygon)
+
+# Returns the same list as 'skeletonize'
+skeleton = straight_skeleton.straight_skeleton
 
 source_points = straight_skeleton.source_points(points3d=False)
 ridges = straight_skeleton.ridges()
