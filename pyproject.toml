@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "shapely-polyskel"
 version = "0.1.2"
-dependencies = ["euclid3==0.1", "shapely==2.0.5"]
+dependencies = ["euclid3==0.1", "shapely>=2.0.5"]
 requires-python = ">=3.10"
 authors = [{ name = "Ármin Scipiades" }, { name = "vec2pt" }]
 maintainers = [{ name = "vec2pt" }]
@@ -37,7 +37,7 @@ dev = ["ruff"]
 [project.urls]
 Homepage = "https://github.com/vec2pt/shapely-polyskel"
 Repository = "https://github.com/vec2pt/shapely-polyskel.git"
-"Bug Tracker" = "https://github.com/vec2pt/shapely-polyskel/issues"
+Issues = "https://github.com/vec2pt/shapely-polyskel/issues"
 # Changelog = "https://github.com/vec2pt/shapely-polyskel/blob/master/CHANGELOG.md"
 
 [tool.pytest.ini_options]
