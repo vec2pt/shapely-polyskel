@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "shapely-polyskel"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = ["euclid3==0.1", "shapely==2.0.5"]
 requires-python = ">=3.10"
 authors = [{ name = "Ármin Scipiades" }, { name = "vec2pt" }]
