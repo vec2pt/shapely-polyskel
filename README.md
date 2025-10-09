@@ -22,7 +22,7 @@ For a modern and excellent overview of the topic please refer to Stefan Huber's 
 
 ## Installation
 
-shapely-polyskel is available on PyPI:
+`shapely-polyskel` is available on PyPI:
 
 ```bash
 pip install shapely-polyskel
@@ -73,7 +73,7 @@ ridges = straight_skeleton.ridges()
 sinks = straight_skeleton.sinks()
 ```
 
-More examples can be found in the [notebooks](./notebooks/) folder.
+More examples can be found in the [notebooks](https://github.com/vec2pt/shapely-polyskel/tree/master/notebooks) directory.
 
 ## Forks & ports
 
